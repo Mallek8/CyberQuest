@@ -1,0 +1,58 @@
+ACHIEVEMENTS = [
+    {
+        "slug": "first-report",
+        "name": "First Report",
+        "description": "Clear your first mission.",
+        "icon": "shield",
+        "criteria": {"type": "missions_completed", "count": 1},
+    },
+    {
+        "slug": "phish-hunter",
+        "name": "Phish Hunter",
+        "description": "Clear Phishing Investigation.",
+        "icon": "mail-warning",
+        "criteria": {"type": "mission_slug", "slug": "phishing-investigation"},
+    },
+    {
+        "slug": "log-reader",
+        "name": "Log Reader",
+        "description": "Clear Security Log Analysis.",
+        "icon": "scroll-text",
+        "criteria": {"type": "mission_slug", "slug": "security-log-analysis"},
+    },
+    {
+        "slug": "signal-spotter",
+        "name": "Signal Spotter",
+        "description": "Clear Anomaly Detection.",
+        "icon": "activity",
+        "criteria": {"type": "mission_slug", "slug": "anomaly-detection"},
+    },
+    {
+        "slug": "case-closed",
+        "name": "Case Closed",
+        "description": "Clear all three missions.",
+        "icon": "badge-check",
+        "criteria": {"type": "missions_completed", "count": 3},
+    },
+    {
+        "slug": "sharp-eye",
+        "name": "Sharp Eye",
+        "description": "Score 100 on any mission.",
+        "icon": "target",
+        "criteria": {"type": "perfect_score", "count": 1},
+    },
+    {
+        "slug": "second-opinion",
+        "name": "Second Opinion",
+        "description": "Request a hint.",
+        "icon": "sparkles",
+        "criteria": {"type": "hints_used", "count": 1},
+    },
+    {
+        "slug": "field-notes",
+        "name": "Field Notes",
+        "description": "Submit three attempts.",
+        "icon": "notebook-pen",
+        "criteria": {"type": "attempts", "count": 3},
+    },
+]

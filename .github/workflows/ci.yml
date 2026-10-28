@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: pytest
+
+  postgres:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: cyberquest
+          POSTGRES_PASSWORD: cyberquest
+          POSTGRES_DB: cyberquest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cyberquest -d cyberquest"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://cyberquest:cyberquest@localhost:5432/cyberquest
+      JWT_SECRET: ci-secret-key-for-cyberquest-32bytes
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - run: alembic upgrade head
+      - run: python -m app.infrastructure.database.seed
+      - run: python -c "from sqlalchemy import create_engine, text; import os; engine = create_engine(os.environ['DATABASE_URL']); conn = engine.connect(); count = conn.execute(text('select count(*) from missions')).scalar(); assert count == 3, count"
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
